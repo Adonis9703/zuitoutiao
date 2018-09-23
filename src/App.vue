@@ -13,6 +13,7 @@ export default {
 <style lang="less">
   body{
     margin: 0;
+    height: 100%;
   }
 
 </style>

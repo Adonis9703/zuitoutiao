@@ -1,6 +1,6 @@
 <template>
     <div class="hot">
-      this is hot page
+      热门
     </div>
 </template>
 
