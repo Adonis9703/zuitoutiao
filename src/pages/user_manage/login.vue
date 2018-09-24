@@ -56,7 +56,7 @@
                           clearable></el-input>
               </el-form-item>
               <el-form-item label="手机号" prop="tel">
-                <el-input v-model="registerForm.tel" size="small" placeholder="用于重置密码/验证码获取" class="width618p"
+                <el-input v-model="registerForm.tel" size="small" placeholder="用于登录/重置密码/验证码获取" class="width618p"
                           clearable></el-input>
               </el-form-item>
               <el-form-item label="邮箱" prop="email">
