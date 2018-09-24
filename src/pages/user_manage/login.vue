@@ -9,7 +9,7 @@
                        :model="loginFormData">
                 <el-form-item label="用户名" prop="accountName">
                   <el-input v-model="loginFormData.accountName" size="small" class="width618p" clearable></el-input>
-                    <el-button type="text" size="small" class="colorC0C" @click="changeLoginType">手机号登陆</el-button>
+                  <el-button type="text" size="small" class="colorC0C" @click="changeLoginType">手机号登陆</el-button>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
                   <el-input v-model="loginFormData.password" size="small" class="width618p" clearable></el-input>
@@ -30,12 +30,14 @@
               <el-form :label-position="labelPosition" :rules="rules" ref="loginForm" label-width="70px"
                        :model="loginFormData">
                 <el-form-item label="手机号" prop="tel">
-                  <el-input v-model="loginFormData.tel" size="small" maxlength="11" class="width618p" clearable></el-input>
-                    <el-button type="text" size="small" class="colorC0C" @click="changeLoginType">账号密码登陆</el-button>
+                  <el-input v-model="loginFormData.tel" size="small" maxlength="11" class="width618p"
+                            clearable></el-input>
+                  <el-button type="text" size="small" class="colorC0C" @click="changeLoginType">账号密码登陆</el-button>
                 </el-form-item>
                 <el-form-item label="验证码" prop="captcha">
                   <el-input v-model="loginFormData.code" size="small" class="width618p" clearable>
-                    <el-button slot="append" size="small" @click="ge">获取验证码</el-button>
+                    <el-button v-if="!timer" slot="append" size="small" @click="getCode">获取验证码</el-button>
+                    <el-button v-else slot="append" size="small">{{count}} s</el-button>
                   </el-input>
                 </el-form-item>
               </el-form>
@@ -87,14 +89,14 @@
     },
     data () {
       return {
-        loginType: true,
+        loginType: true, //true=账号密码登陆 false=手机号登陆
         labelPosition: 'left',
         loginFormData: {
           accountName: '',
           password: '',
           captcha: '',
           tel: '',
-          code:''
+          code: ''
         },
         captcha: '',
         registerForm: {
@@ -144,7 +146,7 @@
       }
     },
     methods: {
-      changeLoginType() {
+      changeLoginType () {
         this.loginType = !this.loginType
       },
       getCaptcha () {
@@ -153,12 +155,14 @@
         }).then(res => {
           let random = new Date().getTime() + '' + Math.floor(Math.random() * Math.pow(10, 8))
           this.captcha = `http://localhost:8080/User/getCaptcha?rad=${random}`
-          // this.setTime()
         })
       },
-      getCode() {
+      getCode () {
         this.$axios.get({
           url: `http://localhost:8080/User/getCode?tel=${this.loginFormData.tel}`
+        }).then(res => {
+          this.setTime()
+          console.log(res)
         })
       },
       setTime () {
@@ -181,41 +185,27 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             if (formName === 'loginForm') {
+
               let params = new URLSearchParams()
-              let parmas2 = new URLSearchParams()
               params.append('accountName', this.loginFormData.accountName)
               params.append('password', this.loginFormData.password)
               params.append('captcha', this.loginFormData.captcha)
-              // let params = {}
-              // params.accountName = this.loginFormData.accountName
-              // params.password = this.loginFormData.password
-              // params.captcha = this.loginFormData.captcha
+
+              let params2 = new URLSearchParams()
+              params2.append('tel', this.loginFormData.tel)
+              params2.append('code', this.loginFormData.code)
+
+              let url = 'http://localhost:8080/User/login'
+              let url2 = 'http://localhost:8080/User/loginByCode'
+
               this.$axios.post({
-                url: 'http://localhost:8080/User/login',
-                data: params
+                url: this.loginType ? url : url2,
+                data: this.loginType ? params : params2
               }).then(res => {
-                console.log(`登陆 ===> `, res)
-                //  alert('submit!')
+                localStorage.setItem('userInfo', JSON.stringify(res.data.user))
               })
-              // this.$axios.({
-              //   method: 'post',
-              //   url: 'http://localhost:8080/User/login',
-              //   data: params
-              // }).then(res => {
-              //   console.log(res)
-              // })
             } else {
               let params = new URLSearchParams()
-              // let params = {
-              //   accountName: this.registerForm.accountName,
-              //   age: 0,
-              //   email: this.registerForm.email,
-              //   gender: '男',
-              //   password: this.registerForm.password,
-              //   tel: this.registerForm.tel,
-              //   totalTimes: 0,
-              //   userName: this.registerForm.userName
-              // }
               params.append('accountName', this.registerForm.accountName)
               params.append('age', '0')
               params.append('email', this.registerForm.email)
