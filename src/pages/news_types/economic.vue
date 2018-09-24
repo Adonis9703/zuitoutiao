@@ -54,7 +54,7 @@
           console.log(`加载更多 ===> `, this.newsList)
         })
       },
-      goTop() {
+      goTop () {
         document.body.scrollTop = 0
         document.documentElement.scrollTop = 0
       }

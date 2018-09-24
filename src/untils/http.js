@@ -9,12 +9,12 @@ export default {
       method: 'post',
       baseURL: '',
       url: option.url,
-      data: qs.stringify(option.params),
-      //data: option.params,
+      params: qs.stringify(option.params),
+      // data: option.params,
       timeout: 5000,
       headers: {
-        // 'Content-Type': type !== 'json' ? 'application/x-www-form-urlencoded' : 'application/json;charset=UTF-8'
-        'Content-Type': 'application/json;charset=UTF-8'
+        'Content-Type': 'application/x-www-form-urlencoded'
+        // 'Content-Type': 'application/json;charset=UTF-8'
       }
     })
   },

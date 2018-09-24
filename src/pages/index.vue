@@ -53,7 +53,7 @@
     },
     data () {
       return {
-        activeIndex: '2',
+        activeIndex: '1',
         color: 'red'
       }
     },
@@ -102,6 +102,9 @@
         })
       },
       test(v){
+        if (v == 'a'){
+          this.$router.push('/login')
+        }
         console.log(v)
       }
     }
@@ -111,7 +114,7 @@
 <style lang="less" scoped>
   .home {
     background-color: #f8f8f8;
-    height: 100%;
+    /*height: 100%;*/
     .logo {
       float: left;
       display: inline-block;
@@ -129,7 +132,7 @@
     }
     .content {
       padding: 0 20% 10px 20%;
-      min-height: 800px;
+      /*min-height: 800px;*/
     }
     .search {
       padding-left: 45px;
