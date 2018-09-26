@@ -85,6 +85,7 @@
         }).then(res => {
           this.news_detail = res.data.jsonObject.ArticleDTO
           this.news_detail.imageUrl = img
+          this.imageList.push(...this.news_detail.imageUrlList)
           console.log(`咨询详情 ===> `, this.news_detail)
         }).then(() => {
           this.$axios.get({
