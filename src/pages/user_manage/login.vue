@@ -9,12 +9,12 @@
                        :model="loginFormData">
                 <el-form-item label="用户名" prop="accountName">
                   <el-input v-model="loginFormData.accountName" size="small" class="width618p" clearable></el-input>
-                  <el-button type="text" size="small" class="colorC0C" @click="changeLoginType">手机号登陆</el-button>
+                  <el-button type="text" size="small" class="color999" @click="changeLoginType">手机号登陆</el-button>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                  <el-input v-model="loginFormData.password" size="small" class="width618p" clearable></el-input>
-                  <i class="el-icon-question colorC0C">
-                    <el-button type="text" size="small" class="colorC0C">忘记密码</el-button>
+                  <el-input v-model="loginFormData.password" type="password" size="small" class="width618p" clearable></el-input>
+                  <i class="el-icon-question color999">
+                    <el-button type="text" size="small" class="color999">忘记密码</el-button>
                   </i>
                 </el-form-item>
                 <el-form-item label="验证码" prop="captcha">
@@ -25,6 +25,7 @@
                 </el-form-item>
               </el-form>
               <el-button type="primary" @click="submit('loginForm')" size="small">确定</el-button>
+              <el-button size="small" @click="resetForm('loginForm')">清空</el-button>
             </div>
             <div v-else>
               <el-form :label-position="labelPosition" :rules="rules" ref="loginForm" label-width="70px"
@@ -34,7 +35,7 @@
                             clearable></el-input>
                   <el-button type="text" size="small" class="colorC0C" @click="changeLoginType">账号密码登陆</el-button>
                 </el-form-item>
-                <el-form-item label="验证码" prop="captcha">
+                <el-form-item label="验证码" prop="code">
                   <el-input v-model="loginFormData.code" size="small" class="width618p" clearable>
                     <el-button v-if="!timer" slot="append" size="small" @click="getCode">获取验证码</el-button>
                     <el-button v-else slot="append" size="small">{{count}} s</el-button>
@@ -42,6 +43,7 @@
                 </el-form-item>
               </el-form>
               <el-button type="primary" @click="submit('loginForm')" size="small">确定</el-button>
+              <el-button size="small" @click="resetForm('loginForm')">清空</el-button>
             </div>
           </el-tab-pane>
           <el-tab-pane label="注册">
@@ -73,7 +75,7 @@
               </el-form-item>
             </el-form>
             <el-button type="primary" @click="submit('registerForm')" size="small">确定</el-button>
-            <el-button size="small" @click="resetForm('registerForm')">重置</el-button>
+            <el-button size="small" @click="resetForm('registerForm')">清空</el-button>
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -119,6 +121,9 @@
             {required: true, message: '请输入密码', trigger: 'blur'}
           ],
           captcha: [
+            {required: true, message: '请输入验证码', trigger: 'blur'}
+          ],
+          code: [
             {required: true, message: '请输入验证码', trigger: 'blur'}
           ],
           tel: [
@@ -200,24 +205,45 @@
 
               this.$axios.post({
                 url: this.loginType ? url : url2,
-                data: this.loginType ? params : params2
+                data: this.loginType ? params : params2,
+                type: 'application/x-www-form-urlencoded;charset=UTF-8'
               }).then(res => {
-                localStorage.setItem('userInfo', JSON.stringify(res.data.user))
+                console.log(res)
+                if (typeof (res.data.user) == 'string') {
+                  this.$message.error(res.data.user)
+                  this.getCaptcha()
+                }else {
+                  this.$message.success(`登陆成功`)
+                  localStorage.setItem('userInfo', JSON.stringify(res.data.user))
+                  this.$router.push('/home')
+                }
               })
             } else {
-              let params = new URLSearchParams()
-              params.append('accountName', this.registerForm.accountName)
-              params.append('age', '0')
-              params.append('email', this.registerForm.email)
-              params.append('gender', '男')
-              params.append('password', this.registerForm.password)
-              params.append('tel', this.registerForm.tel)
-              params.append('totalTimes', '0')
-              params.append('userName', this.registerForm.userName)
+              // let params = new URLSearchParams()
+              // params.append('accountName', this.registerForm.accountName)
+              // params.append('age', this.getInfoByIdCard(this.registerForm.idCard, 3))
+              // params.append('email', this.registerForm.email)
+              // params.append('gender', this.getInfoByIdCard(this.registerForm.idCard, 2))
+              // params.append('password', this.registerForm.password)
+              // params.append('tel', this.registerForm.tel)
+              // params.append('totalTimes', '0')
+              // params.append('userName', this.registerForm.userName)
+              let params = {
+                accountName: this.registerForm.accountName,
+                age: this.getInfoByIdCard(this.registerForm.idCard, 3),
+                email: this.registerForm.email,
+                gender: this.getInfoByIdCard(this.registerForm.idCard, 2),
+                password: this.registerForm.password,
+                tel: this.registerForm.tel,
+                userName: this.registerForm.userName
+              }
               this.$axios.post({
                 url: 'http://localhost:8080/User/regist',
-                data: params
+                data: params,
+                type: 'application/json;charset=UTF-8'
               }).then(res => {
+                this.$message.success(`注册成功！`)
+                // this.$router.push('/home')
                 console.log(`注册 ===> `, res)
               })
             }
@@ -230,6 +256,27 @@
       },
       resetForm (formName) {
         this.$refs[formName].resetFields()
+      },
+      getInfoByIdCard (idCard, type) {
+        if (type == 1) {
+          let birth = idCard.substring(6, 10) + '-' + idCard.substring(10, 12) + '-' + idCard.substring(12, 14)
+          return birth
+        } else if (type == 2) {
+          if (parseInt(idCard.substring(16, 1)) % 2 == 1) {
+            return '男'
+          } else {
+            return '女'
+          }
+        } else if (type == 3) {
+          let myDate = new Date()
+          let month = myDate.getMonth() + 1
+          let day = myDate.getDate()
+          let age = myDate.getFullYear() - idCard.substring(6, 10) - 1
+          if (idCard.substring(10, 12) < month || idCard.substring(10, 12) == month && idCard.substring(12, 14) <= day) {
+            age++
+          }
+          return age
+        }
       }
     }
   }

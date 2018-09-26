@@ -13,8 +13,8 @@ export default {
        data: option.data,
       timeout: 5000,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      //  'Content-Type': 'application/json;charset=UTF-8'
+      //  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+       'Content-Type': option.type
       }
     })
   },

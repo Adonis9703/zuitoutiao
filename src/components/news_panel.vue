@@ -3,13 +3,13 @@
     <el-card class="box-card" shadow="hover">
       <div slot="header" class="clearfix">
         <span>{{news.title}}</span>
-        <el-button style="float: right; padding: 3px 3px" type="text">
-          <i class="el-icon-share"/> 分享
-        </el-button>
+        <!--<el-button style="float: right; padding: 3px 3px" type="text">-->
+          <!--<i class="el-icon-share"/> 分享-->
+        <!--</el-button>-->
         <!--<el-button style="float: right; padding: 3px 0" type="text">-->
         <!--<i class="el-icon-star-off"/> {{news.dislikes}}踩-->
         <!--</el-button>-->
-        <el-button style="float: right; padding: 3px 0" type="text">
+        <el-button :disabled="!isLogin" style="float: right; padding: 3px 0" type="text" @click.stop="like(news.id)">
           <i class="el-icon-star-on"/> {{news.likes}}
         </el-button>
         <el-button style="float: right; padding: 3px 3px" type="text">
@@ -29,13 +29,25 @@
   export default {
     name: 'news_panel',
     props: ['news'],
-    datae() {
+    data () {
       return {
-        style: {
-        }
+        isLogin: false,
+        style: {}
       }
     },
     created () {
+      if (localStorage.getItem('userInfo')){
+        this.isLogin = true
+      }
+    },
+    methods: {
+      like (newsId) {
+        let userId = JSON.parse(localStorage.getItem('userInfo')).id
+        let url = `http://localhost:8080/Article/updateLikes?articleId=${newsId}&userId=${userId}`
+        this.$axios.get({
+          url: url
+        })
+      }
     }
   }
 </script>

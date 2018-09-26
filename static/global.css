@@ -55,10 +55,24 @@ a {
 .text-align-center {
   text-align: center;
 }
+.bgcolor-white{
+  background-color: white;
+}
+.color999{
+  color: #999999;
+}
 
 .colorC0C{
   color: #C0C4CC;
 }
 .font-size13{
   font-size: 13px;
+}
+.fix-top{
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.padding0{
+  padding: 0 0;
 }

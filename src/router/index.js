@@ -15,6 +15,7 @@ import Fas from '@/pages/news_types/fashion'
 import Spo from '@/pages/news_types/sport'
 import login from '@/pages/user_manage/login'
 import news_detail from '@/pages/news_manage/news_detail'
+import user_home from '@/pages/user_manage/user_home'
 
 Vue.use(Router)
 
@@ -73,6 +74,10 @@ export default new Router({
           name: 'news_detail',
           component: news_detail
         },
+        {
+          path: '/userHome',
+          component: user_home
+        }
       ]
     },
 

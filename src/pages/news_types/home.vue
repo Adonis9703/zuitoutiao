@@ -1,9 +1,13 @@
 <template>
   <div>
-    <el-carousel height="250" style="margin-top: 5px">
-      <el-carousel-item v-for="item in 5" :key="item">
+    <el-card shadow="hover">
+    <el-carousel class="bgcolor-white" height="285px" type="card" style="margin-top: 5px">
+      <el-carousel-item v-for="(item, index) of topList" :key="index">
+        <img :src="item.imageUrl" class="width100p" @click="goDetail(item)" >
+        <div class="title">{{item.title}}</div>
       </el-carousel-item>
     </el-carousel>
+    </el-card>
     <div v-for="(item, index) of newsList" :key="index" @click="goDetail(item)">
       <news :news="item"></news>
     </div>
@@ -24,7 +28,8 @@
       return {
         type: null,
         start: 0, //从第几条开始 一次返回20条
-        newsList: []
+        newsList: [],
+        topList: []
       }
     },
     created () {
@@ -34,6 +39,9 @@
         url: `http://localhost:8080/Article/getArticleByType?typeNumber=${this.type}&start=${this.start}`
       }).then(res => {
         this.newsList.push(...res.data.articleJSONArray)
+        this.topList = this.newsList.slice(0,5)
+        this.newsList = this.newsList.slice(5,this.newsList.length)
+        console.log(this.topList)
       })
     },
     methods: {
@@ -59,7 +67,8 @@
       goTop () {
         document.body.scrollTop = 0
         document.documentElement.scrollTop = 0
-      }
+      },
+
     }
   }
 </script>
@@ -73,12 +82,22 @@
     margin: 0;
     text-align: center;
   }
-
-  .el-carousel__item:nth-child(2n) {
-    background-color: #99a9bf;
+  .title{
+    font-size: 17px;
+    letter-spacing: 1px;
+    color: white;
+    text-align: center;
+    position: relative;
+    top: -30px
   }
+  /*.el-carousel__container{*/
+    /*background-color: white;*/
+  /*}*/
+  /*.el-carousel__item:nth-child(2n) {*/
+    /*!*background-color: #99a9bf;*!*/
+  /*}*/
 
-  .el-carousel__item:nth-child(2n+1) {
-    background-color: #d3dce6;
-  }
+  /*.el-carousel__item:nth-child(2n+1) {*/
+    /*!*background-color: #d3dce6;*!*/
+  /*}*/
 </style>

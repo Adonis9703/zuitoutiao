@@ -27,7 +27,7 @@
     },
     created () {
       this.start = 0
-      this.type = 9
+      this.type = 7
       this.$axios.get({
         url: `http://localhost:8080/Article/getArticleByType?typeNumber=${this.type}&start=${this.start}`
       }).then(res => {

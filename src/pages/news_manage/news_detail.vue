@@ -10,12 +10,12 @@
         <p>{{news_detail.content}}</p>
       </div>
       <span class="authorUrl">
-          <el-button style="float: right; padding: 3px 3px" type="text">
-          <i class="el-icon-share"/> 分享</el-button>
+          <!--<el-button style="float: right; padding: 3px 3px" type="text">-->
+          <!--<i class="el-icon-share"/> 分享</el-button>-->
         <!--<el-button style="float: right; padding: 3px 0" type="text">-->
         <!--<i class="el-icon-star-off"/> {{news_detail.dislikes}}踩-->
         <!--</el-button>-->
-        <el-button style="float: right; padding: 3px 0" type="text">
+        <el-button @click="like(news_detail.id)" :disabled="!isLogin" style="float: right; padding: 3px 0" type="text">
           <i class="el-icon-star-on"/> {{news_detail.likes}}
         </el-button>
         <el-button style="float: right; padding: 3px 3px" type="text">
@@ -25,13 +25,21 @@
     </el-card>
     <el-card shadow="hover" class="margin-top10px">
       <h3>评论区</h3>
-      <el-input size="small"
+      <el-input v-if="isLogin" size="small"
         class="comment-input"
         type="text"
         clearable
         placeholder="在这留下你的评论吧"
         v-model="my_comment">
         <el-button @click="submit" slot="append" icon="el-icon-check"></el-button>
+      </el-input>
+      <el-input v-else size="small"
+                class="comment-input"
+                type="text"
+                disabled
+                placeholder="登陆后才能评论哦"
+                v-model="my_comment">
+        <el-button disabled slot="append" icon="el-icon-check"></el-button>
       </el-input>
       <!--<div class="splitter"></div>-->
       <div v-if="news_comment.length=== 0">暂无评论~</div>
@@ -54,13 +62,18 @@
     components:{ comments },
     data () {
       return {
+        isLogin:false,
         show: false,
         news_detail: {},
         news_comment: [],
+        imageList:[],
         my_comment:''
       }
     },
     created () {
+      if (localStorage.getItem('userInfo')){
+        this.isLogin = true
+      }
       this.getNewsDetail()
     },
     methods: {
@@ -84,6 +97,13 @@
       },
       submit() {
         console.log(`提交评论`, this.my_comment)
+      },
+      like (newsId) {
+        let userId = JSON.parse(localStorage.getItem('userInfo')).id
+        let url = `http://localhost:8080/Article/updateLikes?articleId=${newsId}&userId=${userId}`
+        this.$axios.get({
+          url: url
+        })
       }
     }
   }
