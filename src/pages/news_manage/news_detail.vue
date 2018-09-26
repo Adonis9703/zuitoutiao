@@ -35,10 +35,8 @@
       </el-input>
       <el-input v-else size="small"
                 class="comment-input"
-                type="text"
                 disabled
-                placeholder="登陆后才能评论哦"
-                v-model="my_comment">
+                placeholder="登陆后才能评论哦">
         <el-button disabled slot="append" icon="el-icon-check"></el-button>
       </el-input>
       <!--<div class="splitter"></div>-->
@@ -64,6 +62,7 @@
       return {
         isLogin:false,
         show: false,
+        userInfo: {},
         news_detail: {},
         news_comment: [],
         imageList:[],
@@ -72,6 +71,7 @@
     },
     created () {
       if (localStorage.getItem('userInfo')){
+        this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
         this.isLogin = true
       }
       this.getNewsDetail()
@@ -80,8 +80,14 @@
       getNewsDetail () {
         let id = localStorage.getItem('newsIdTemp')
         let img = localStorage.getItem('newsImgTemp')
+        let userId = null
+        if (this.isLogin) {
+           userId = JSON.parse(localStorage.getItem('userInfo')).id
+        }
+        let url2 = `http://localhost:8080/Article/getArticleContent?articleId=${id}&userId=${userId}`
+        let url = `http://localhost:8080/Article/getArticleContent?articleId=${id}`
         this.$axios.get({
-          url: `http://localhost:8080/Article/getArticleContent?articleId=${id}`,
+          url: userId==null ? url : url2,
         }).then(res => {
           this.news_detail = res.data.jsonObject.ArticleDTO
           this.news_detail.imageUrl = img
@@ -92,18 +98,44 @@
             url: `http://localhost:8080/ArticleComment/getComment?id=${id}`
           }).then(res => {
             this.news_comment.push(...res.data.articleCommentList)
+            this.news_comment = this.news_comment.reverse()
             console.log(this.news_comment)
           })
         })
       },
       submit() {
-        console.log(`提交评论`, this.my_comment)
+        let params = {
+          articleId: this.news_detail.id,
+          content: this.my_comment,
+          userId: this.userInfo.id,
+          likes: 0,
+          dislikes: 0,
+          userName: this.userInfo.userName
+        }
+        this.$axios.post({
+          url: 'http://localhost:8080/ArticleComment/addArticleComment',
+          data: params,
+          type: 'application/json;charset=UTF-8'
+        }).then(res => {
+          console.log(`提交评论 ===> `, res)
+        }).then(() => {
+          this.$axios.get({
+            url: `http://localhost:8080/ArticleComment/getComment?id=${localStorage.getItem('newsIdTemp')}`
+          }).then(res => {
+            this.news_comment.push(...res.data.articleCommentList)
+            this.news_comment = this.news_comment.reverse()
+            // console.log(this.news_comment)
+          })
+        })
+        // console.log(`提交评论`, this.my_comment)
       },
       like (newsId) {
         let userId = JSON.parse(localStorage.getItem('userInfo')).id
         let url = `http://localhost:8080/Article/updateLikes?articleId=${newsId}&userId=${userId}`
         this.$axios.get({
           url: url
+        }).then(res => {
+          this.news_detail.likes = res.data.likes
         })
       }
     }

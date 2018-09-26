@@ -46,6 +46,8 @@
         let url = `http://localhost:8080/Article/updateLikes?articleId=${newsId}&userId=${userId}`
         this.$axios.get({
           url: url
+        }).then(res => {
+          this.news.likes = res.data.likes
         })
       }
     }
