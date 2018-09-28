@@ -263,9 +263,9 @@
           return birth
         } else if (type == 2) {
           if (parseInt(idCard.substring(16, 1)) % 2 == 1) {
-            return '男'
-          } else {
             return '女'
+          } else {
+            return '男'
           }
         } else if (type == 3) {
           let myDate = new Date()

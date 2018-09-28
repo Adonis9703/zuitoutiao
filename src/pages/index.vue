@@ -1,7 +1,7 @@
 <template>
   <!--主页-->
   <div class="home">
-    <el-menu class="fix-top"
+    <el-menu class="fix-top z-index999"
       :default-active="activeIndex"
       mode="horizontal" @select="check"
       text-color="#666666">
@@ -33,7 +33,7 @@
           </span>
         </div>
         <el-dropdown-menu v-if="userInfo" slot="dropdown">
-          <el-dropdown-item command="a">个人资料</el-dropdown-item>
+          <el-dropdown-item command="a">兴趣模型</el-dropdown-item>
           <el-dropdown-item command="b">登出</el-dropdown-item>
         </el-dropdown-menu>
         <el-dropdown-menu v-else slot="dropdown">
@@ -60,7 +60,7 @@
       this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
       if (this.userInfo) {
         this.userInfo.image = 'http://localhost:8080' + this.userInfo.image
-        console.log(this.userInfo)
+        // console.log(this.userInfo)
       }
     },
     mounted () {
