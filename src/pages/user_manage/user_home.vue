@@ -7,7 +7,7 @@
           <div class="title">兴趣模型</div>
           <div ref="myChart" id="myChart" class="chart"></div>
         </el-col>
-        <el-col :offset="2" :span="4">
+        <el-col :offset="2" :span="5">
           <div class="title">个人信息</div>
           <img :src="userInfo.image" class="logo"/>
           <el-button type="text" size="small" icon="el-icon-upload">上传头像</el-button>
@@ -34,8 +34,6 @@
           </div>
         </el-col>
       </el-row>
-
-
       <!--<div style="clear: both;"></div>-->
     </el-card>
 

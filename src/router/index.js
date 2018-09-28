@@ -31,10 +31,12 @@ export default new Router({
     },
     {
       path: '/index',
+      name: 'Index',
       component: index,
       children: [
         {
           path: '/home',
+          name:'Home',
           component: home
         },
         {

@@ -26,6 +26,8 @@
               </el-form>
               <el-button type="primary" @click="submit('loginForm')" size="small">确定</el-button>
               <el-button size="small" @click="resetForm('loginForm')">清空</el-button>
+              <el-button size="small" class="color999" @click="$router.replace({path:'/'})" type="text">游客访问</el-button>
+
             </div>
             <div v-else>
               <el-form :label-position="labelPosition" :rules="rules" ref="loginForm" label-width="70px"
@@ -44,6 +46,7 @@
               </el-form>
               <el-button type="primary" @click="submit('loginForm')" size="small">确定</el-button>
               <el-button size="small" @click="resetForm('loginForm')">清空</el-button>
+              <el-button size="small" class="color999" @click="$router.replace({name: 'Home'})" type="text">游客访问</el-button>
             </div>
           </el-tab-pane>
           <el-tab-pane label="注册">
@@ -76,6 +79,7 @@
             </el-form>
             <el-button type="primary" @click="submit('registerForm')" size="small">确定</el-button>
             <el-button size="small" @click="resetForm('registerForm')">清空</el-button>
+            <el-button size="small" class="color999"  @click="$router.replace({name: 'Home'})" type="text">游客访问</el-button>
           </el-tab-pane>
         </el-tabs>
       </el-col>

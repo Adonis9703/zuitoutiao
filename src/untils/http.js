@@ -11,7 +11,7 @@ export default {
       url: option.url,
      // data: qs.stringify(option.data),
        data: option.data,
-      timeout: 5000,
+      timeout: 50000,
       headers: {
       //  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
        'Content-Type': option.type
@@ -23,7 +23,7 @@ export default {
       method: 'get',
       baseURL: '',
       url: option.url,
-      timeout: 5000,
+      timeout: 50000,
       headers: {
         // 'Content-Type': type !== 'json' ? 'application/x-www-form-urlencoded' : 'application/json;charset=UTF-8'
         'Content-Type': 'application/json;charset=UTF-8'
